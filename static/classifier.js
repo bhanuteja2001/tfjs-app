@@ -44,8 +44,12 @@ var model = undefined;
 //========================================================================
 
 
+var arrayMaxIndex = function(array) {
+  return array.indexOf(Math.max.apply(null, array));
+};
+
 async function initialize() {
-    model = await tf.loadLayersModel('/weights/catsvsdogs/model.json');
+    model = await tf.loadLayersModel('/jsweights/model.json');
 }
 
 async function predict() {
@@ -55,17 +59,32 @@ async function predict() {
     return;
   }
 
-  let tensorImg = tf.browser.fromPixels(imagePreview).resizeNearestNeighbor([150, 150]).toFloat().expandDims();
+  let tensorImg = tf.browser.fromPixels(imagePreview).resizeNearestNeighbor([224, 224]).expandDims(0).div(255);
   prediction = await model.predict(tensorImg).data();
+  prediction = arrayMaxIndex(prediction)
 
-  if (prediction[0] === 0) {
-      predResult.innerHTML = "I think it's a cat";
+  if (prediction === 0) {
+      console.log("Downdog")
+      predResult.innerHTML = "downdog";
 
-  } else if (prediction[0] === 1) {
-      predResult.innerHTML = "I think it's a dog";
+  } else if (prediction === 1) {
+      console.log("goddess")
+      predResult.innerHTML = "goddess";
 
-  } else {
-      predResult.innerHTML = "This is Something else";
+  } else if (prediction === 2) {
+      console.log("Plank")
+      predResult.innerHTML = "Plank";
+  
+  } else if (prediction === 3) {
+      console.log("Tree")
+      predResult.innerHTML = "Tree";
+  
+  } else if (prediction == 4) {
+      console.log("Warrior")
+      predResult.innerHTML = "warrior";
+  }
+  else {
+    predResult.innerHTML = prediction
   }
   show(predResult)
 
